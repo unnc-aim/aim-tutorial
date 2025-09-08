@@ -23,7 +23,7 @@
    - 如果使用 HTTP
 3. 勾选“使用其他凭据连接”，点击“完成”，输入 NAS 用户名和密码。
 
-   ![Windows GUI WebDAV Drive Mount](./assets/NAS_CONNECTION/WindowsGUIWebDAVDriveMount.png)
+   ![Windows GUI WebDAV Drive Mount](./assets/WindowsGUIWebDAVDriveMount.png)
 
 4. 成功后会在“此电脑”中看到已映射的网络驱动器。
 
@@ -38,7 +38,7 @@
 
 ### Windows 附加教程 - 解决 HTTP WebDAV 连接问题
 
-![Windows Connect HTTP WebDAV Error](./assets/NAS_CONNECTION/WindowsConnectHTTPWebDAVError.png)
+![Windows Connect HTTP WebDAV Error](./assets/WindowsConnectHTTPWebDAVError.png)
 
 鉴于本地搭建的 webdav 服务和链接大多是基于 HTTP 协议的，如果碰到 HTTP 连接问题，可能是因为 Windows 默认的 WebClient 服务仅支持 https 协议，可以参考下面教程来放开 Windows 对于 HTTP 协议 WebDAV 的限制：
 
@@ -47,9 +47,9 @@
    - HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters
 3. 找到或创建一个名为 `BasicAuthLevel` 的 DWORD（32 位）值。
 4. 将 `BasicAuthLevel` 的值设置为 `2`（允许对 HTTP 和 HTTPS 使用基本身份验证）。
-   ![Windows Regedit Config](./assets/NAS_CONNECTION/WindowsRegeditConfig.png)
+   ![Windows Regedit Config](./assets/WindowsRegeditConfig.png)
 5. 关闭注册表编辑器，再次按下 Win + R，输入 services.msc，回车。
-   ![Windows WebClient Service Restart](./assets/NAS_CONNECTION/WindowsWebClientServiceRestart.png)
+   ![Windows WebClient Service Restart](./assets/WindowsWebClientServiceRestart.png)
 6. 找到“WebClient”服务，右键选择“重新启动”。
 
 完成上面步骤后，Windows 就可以通过 HTTP 协议连接到 WebDAV 服务器了。
@@ -81,7 +81,7 @@
    - WebDAV 资源会以网络位置显示在侧栏，点击即可访问。
    - 可按 Ctrl+D 或在菜单中选择“Add to Bookmarks”（添加到书签），将该位置固定到侧栏，便于下次快速打开。
 
-![Ubuntu GUI WebDAV Drive Mount](./assets/NAS_CONNECTION/UbuntuGUIWebDAVDriveMount.png)
+![Ubuntu GUI WebDAV Drive Mount](./assets/UbuntuGUIWebDAVDriveMount.png)
 
 常见问题与提示：
 
@@ -130,7 +130,7 @@ GUI（推荐）：
 3. 点击“连接”，输入 NAS 凭据并选择保存到钥匙串（可选）。
 
 占位图（macOS Finder 连接占位）：  
-![macOS GUI WebDAV Drive Mount](./assets/NAS_CONNECTION/macOSGUIWebDAVDriveMount.png)
+![macOS GUI WebDAV Drive Mount](./assets/macOSGUIWebDAVDriveMount.png)
 
 ### Zsh 命令行（临时挂载）
 

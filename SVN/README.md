@@ -42,7 +42,7 @@ sudo apt install subversion
 
 Windows：
 
-- 推荐图形客户端：TortoiseSVN（右键集成）
+- 推荐图形客户端：[TortoiseSVN](https://tortoisesvn.net/)（右键集成）
 - 命令行：可安装带 svn 的包管理器（例如使用 Chocolatey `choco install svn`），或从 CollabNet / VisualSVN Server / SlikSVN 获取命令行工具
 
 确认安装：

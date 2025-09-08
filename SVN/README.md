@@ -1,10 +1,11 @@
-# SVN 使用教程（命令行 + VS Code 图形界面）
+# SVN 使用教程（命令行 + 图形界面）
 
 本文件提供一个面向开发者和文档维护者的 Subversion (SVN) 使用教程，包含：
 
 - 命令行安装与常用命令
 - 日常工作流示例（checkout/update/commit/分支/合并）
 - 常见问题与冲突处理
+- Windows 下 TortoiseSVN 使用示例（图形客户端）
 - 在 Visual Studio Code 中使用 SVN（安装扩展、常用操作、配置）
 
 假设/约定：示例命令在 macOS/Linux/Windows 终端上通用，具体路径或二进制名在不同系统上可能不同（例如 `svn`）。如果本地环境使用图形客户端（如 TortoiseSVN）也可以配合使用。

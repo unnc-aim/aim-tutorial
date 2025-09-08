@@ -5,7 +5,9 @@
         "gvfs",
         "netdev",
         "noauto",
+        "propset",
         "regedit",
+        "svnignore",
         "usermod",
         "webdav"
     ]

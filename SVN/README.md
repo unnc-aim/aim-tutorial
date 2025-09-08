@@ -11,9 +11,28 @@
 
 ---
 
-## 目录速览（快速参考）
+## 写在前面 - SVN 工作原理 / 流程简介
 
-- 检出（checkout）：`svn checkout <URL> <path>`
+![Theory](./assets/0-Theory.png)
+
+如上图所示，SVN 工作模式是：
+
+客户端从服务器中 SVN checkout（检出）所要编制的内容，编制完成之后 SVN commit（提交）到服务器中。
+
+---
+
+## 本文快速链接
+
+- [SVN 安装](#1-安装-svn)
+- [Windows TortoiseSVN 使用示例](#6-tortoisesvn-使用示例windows-图形客户端)
+- [VS Code 中使用 SVN](#7-在-visual-studio-code-中使用-svn图形扩展指南)
+- [常见问题](#8-常见问题faq)
+
+---
+
+## 命令速览（快速参考）
+
+- 检出（checkout）：`svn checkout [URL] <path>`
 - 更新（update）：`svn update` 或 `svn up`
 - 添加文件：`svn add <file>`
 - 提交：`svn commit -m "message"`
@@ -42,8 +61,9 @@ sudo apt install subversion
 
 Windows：
 
-- 推荐图形客户端：[TortoiseSVN](https://tortoisesvn.net/)（右键集成）
-- 命令行：可安装带 svn 的包管理器（例如使用 Chocolatey `choco install svn`），或从 CollabNet / VisualSVN Server / SlikSVN 获取命令行工具
+推荐图形客户端：[TortoiseSVN](https://tortoisesvn.net/)（右键集成）
+
+[点击下载 Windows x64 安装包](https://sourceforge.net/projects/tortoisesvn/files/1.14.9/Application/TortoiseSVN-1.14.9.29743-x64-svn-1.14.5.msi/download)
 
 确认安装：
 
@@ -223,11 +243,108 @@ svn revert path/to/file
 
 ---
 
-## 6. 在 Visual Studio Code 中使用 SVN（图形/扩展指南）
+## 6. TortoiseSVN 使用示例（Windows 图形客户端）
+
+TortoiseSVN 是 Windows 上流行的 SVN 图形客户端，集成在资源管理器右键菜单中。
+
+> 摘自 <https://blog.csdn.net/qq_45527691/article/details/122302359>
+
+阅读这部分的前提：服务器、客户端 TortoiseSVN 均已安装完成
+
+### 1. 客户端与服务器连接
+
+示例：在电脑 E 盘新建 SVNtest 文件夹，计划在此文件夹中来编辑服务器中检出的文件
+
+![Checkout](./assets/1-Checkout.png)
+
+repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 URL。
+
+![URL](./assets/2-URL.png)
+
+将 URL（我们会提供）输入之后点击确定，此时服务器、客户端 TortoiseSVN 已经建立连接，其中会出现一个隐藏文件夹.svn（不要删除）
+
+![CheckoutSuccess](./assets/3-CheckoutSuccess.png)
+
+上图表示，SVN 链接文件夹与库（`https://DESKTOP-JHR5MP0/svn/SVNTEST/`）建立连接，同时检出库中的内容，因为库里无内容，所以显示版本为 0，且无其它文件夹。
+
+### 2. SVN commit（提交）
+
+模拟客户端 1
+在上面创建好的文件夹中，创建名为：提交 0 的 word 文档
+
+![Commit](./assets/4-Commit.png)
+
+点击提交
+
+![ClickCommit](./assets/5-ClickCommit.png)
+
+![CommitPage](./assets/6-CommitPage.png)
+
+在信息中填写此次的操作，点击确定
+
+![CommitMessage](./assets/7-CommitMessage.png)
+
+文档角标出现绿色对钩，表示成功提交至库中，同时，因为你已经对库进行了更改，增加了 word 文档，所以版本变成 1
+
+![CommitSuccess](./assets/8-CommitSuccess.png)
+
+库状态：版本：1，所含内容：提交 0.docx
+
+### 3. SVN checkout（检出）
+
+模拟客户端 2
+要对上述的库中的：提交 0.docx，进行操作
+新建一个文件夹：客户端 2
+
+![Checkout2](./assets/9-Checkout2.png)
+
+同样需要先与服务器进行连接，检出–>输入库 URL
+
+![ClickCheckout](./assets/10-ClickCheckout.png)
+
+![URL2](./assets/11-URL2.png)
+
+出现以下界面：
+
+![CheckoutSuccess2](./assets/12-CheckoutSuccess2.png)
+
+对 word 进行修改，之后出现红色叹号，表示与库中文件被修改，需要我们重新提交
+
+![Edit](./assets/13-Edit.png)
+
+将修改内容介绍写入信息中：
+
+![CommitMessage2](./assets/14-CommitMessage2.png)
+
+![CommitSuccess2](./assets/15-CommitSuccess2.png)
+
+关闭客户端 2 文件夹，重新进入，可以看到出现绿色对号表示成功
+
+![CommitSuccessView](./assets/16-CommitSuccessView.png)
+
+### 4. SVN Update（更新）
+
+对上述的状态进行梳理：
+库：版本 2：提交 0.docx（被修改）
+客户端 1：版本 1：提交 0.docx
+客户端 2：版本 2：提交 0.docx（被修改）
+由此可知：
+客户端 1（SVN 链接文件夹）中的版本已经落后于库
+点击更新：
+
+![Update](./assets/17-Update.png)
+
+变为版本 2
+
+![UpdateVersionView](./assets/18-UpdateVersionView.png)
+
+---
+
+## 7. 在 Visual Studio Code 中使用 SVN（图形/扩展指南）
 
 下面说明在 VS Code 中以图形或扩展方式使用 SVN 的常见步骤与建议。不同扩展提供的命令名称可能略有差别，但核心操作一致。
 
-### 6.1 安装扩展
+### 7.1 安装扩展
 
 1. 打开 VS Code。
 2. 侧边栏选择扩展（Extensions），在搜索框输入 "SVN" 或 "Subversion"。
@@ -235,7 +352,7 @@ svn revert path/to/file
 
 注意：该扩展通常只是提供 UI 与命令封装，仍然需要系统中安装好 `svn` 命令行工具并可在 PATH 中访问。
 
-### 6.2 常见图形操作（命令面板 & 源代码管理视图）
+### 7.2 常见图形操作（命令面板 & 源代码管理视图）
 
 - 检出仓库：打开命令面板（Cmd/Ctrl+Shift+P），选择 `SVN: Checkout` 或扩展提供的同名命令，输入仓库 URL，选择本地目录。
 - 更新：在资源管理器或命令面板执行 `SVN: Update`，或在源代码管理（Source Control）面板使用更新按钮。
@@ -245,14 +362,14 @@ svn revert path/to/file
 
 很多扩展还提供图形化的冲突解决指引和文件差异查看（内置 diff 窗口），方便手动合并并标记为已解决。
 
-### 6.3 配置建议
+### 7.3 配置建议
 
 - 指定 SVN 可执行文件路径（如果扩展找不到 `svn`）：在 `settings.json` 中配置类似 `"svn.path": "/usr/local/bin/svn"`（具体键名以扩展文档为准）。
 - 配置自动更新、提交行为或默认忽略规则，参考扩展设置页。
 
 示例（打开 VS Code 用户设置并添加，注意键名需与扩展文档对齐）：
 
-```json
+```jsonc
 {
   // 举例：如果扩展支持该配置
   "svn.path": "/usr/local/bin/svn",
@@ -261,7 +378,7 @@ svn revert path/to/file
 }
 ```
 
-### 6.4 VS Code 工作流示例
+### 7.4 VS Code 工作流示例
 
 1. 使用 `SVN: Checkout` 将远端 trunk/branch 检出到本地目录，并在 VS Code 中打开该文件夹。
 2. 在编辑器中修改文件，保存后在源代码管理面板查看变更（显示新增/修改/删除）。
@@ -270,7 +387,7 @@ svn revert path/to/file
 
 ---
 
-## 7. 常见问题（FAQ）
+## 8. 常见问题（FAQ）
 
 Q: 提交时提示“out of date”或版本冲突怎么办？
 
@@ -288,9 +405,11 @@ Q: 想把本地目录导出成不含 .svn 的发布包？
 
 A: 使用 `svn export`（参见上文）。
 
+> 注意，上述所有指令都可以通过 TortoiseSVN 图形界面 或者 VS Code SVN 插件的命令面板实现。
+
 ---
 
-## 8. 小贴士与最佳实践
+## 9. 小贴士与最佳实践
 
 - 在提交前经常 `svn update`，保持与主干的同步，减少合并冲突。
 - 提交信息写清楚改动目的，回溯时更容易定位。
@@ -299,9 +418,9 @@ A: 使用 `svn export`（参见上文）。
 
 ---
 
-## 9. 参考命令速查表
+## 10. 参考命令速查表
 
-- svn checkout \<URL> [dir] - 检出
+- svn checkout [URL] [dir] - 检出
 - svn update - 更新
 - svn add \<file> - 添加到版本控制
 - svn delete \<file> - 删除并提交
@@ -310,13 +429,5 @@ A: 使用 `svn export`（参见上文）。
 - svn diff - 查看差异
 - svn log -l 50 - 最近 50 条提交
 - svn propset svn:ignore \<rules> . - 设置忽略规则
-- svn merge \<URL> - 合并
-- svn export \<URL> \<dir> - 导出（无 .svn）
-
----
-
-如果你希望我把某个你们团队常用的仓库 URL、约定的分支命名策略或 VS Code 扩展配置示例写入本文件（例如把 `https://svn.example.com/repos/our-project` 作为示例），回复我需要替换的具体信息，我会把它追加到 `SVN/README.md` 中。
-
----
-
-文件位置：`SVN/README.md`（已更新）
+- svn merge [URL] - 合并
+- svn export [URL] \[dir] - 导出（无 .svn）

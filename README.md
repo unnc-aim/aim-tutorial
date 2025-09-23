@@ -1,3 +1,3 @@
-# AIM-DOCS
+# AIM Tutorial
 
-Docs for AIM members
+Common Tutorial Docs for AIM members

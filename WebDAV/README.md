@@ -1,4 +1,4 @@
-# NAS (WebDAV) 连接 / 挂载 教程（Windows / Linux / macOS）
+# NAS (WebDAV) 连接 + 磁盘挂载 教程（Windows / Linux / macOS）
 
 说明：本文以 WebDAV 为例，所有示例中将 NAS 地址和端口分别替换为 `$NAS_IP` 和 `$PORT`，共享文件夹名称使用 `$FOLDER` 代替。若 NAS 的 WebDAV 根路径不是根目录（例如 `/webdav`），请将示例路径替换为实际路径。需要图片的位置已留出占位，待你插入。
 

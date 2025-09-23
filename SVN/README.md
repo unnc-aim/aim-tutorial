@@ -25,9 +25,9 @@
 ## 本文快速链接
 
 - [SVN 安装](#1-安装-svn)
-- [Windows TortoiseSVN 使用示例](#6-tortoisesvn-使用示例windows-图形客户端)
-- [VS Code 中使用 SVN](#7-在-visual-studio-code-中使用-svn图形扩展指南)
-- [常见问题](#8-常见问题faq)
+- [Windows TortoiseSVN 使用示例](#3-tortoisesvn-使用示例windows-图形客户端)
+- [VS Code 中使用 SVN](#4-在-visual-studio-code-中使用-svn图形扩展指南)
+- [常见问题](#5-常见问题faq)
 
 ---
 
@@ -43,30 +43,46 @@
 - 忽略文件：`svn propset svn:ignore -F .svnignore .` 或 `svn propset svn:ignore "node_modules" .`
 - 解决冲突：编辑文件 -> `svn resolved <file>` 或 `svn resolve --accept working <file>`
 
+### 参考命令速查表
+
+- `svn checkout [URL] [dir]` - 检出
+- `svn update` - 更新
+- `svn add <file>` - 添加到版本控制
+- `svn delete <file>` - 删除并提交
+- `svn commit -m "msg"` - 提交
+- `svn status` - 状态
+- `svn diff` - 查看差异
+- `svn log -l 50` - 最近 50 条提交
+- `svn propset svn:ignore <rules>` . - 设置忽略规则
+- `svn merge [URL]` - 合并
+- `svn export [URL] [dir]` - 导出（无 .svn）
+
 ---
 
 ## 1. 安装 SVN
 
-macOS（Homebrew）：
+### macOS（Homebrew）
 
 ```bash
 brew install svn
 ```
 
-Ubuntu / Debian：
+### Ubuntu / Debian
 
 ```bash
 sudo apt update
 sudo apt install subversion
 ```
 
-Windows：
+### Windows
 
-推荐图形客户端：[TortoiseSVN](https://tortoisesvn.net/)（右键集成）
+推荐图形客户端：[TortoiseSVN](https://tortoisesvn.net/)（安装后可在 Explorer 中有右键集成）
 
 [点击下载 Windows x64 安装包](https://sourceforge.net/projects/tortoisesvn/files/1.14.9/Application/TortoiseSVN-1.14.9.29743-x64-svn-1.14.5.msi/download)
 
-确认安装：
+#### **注意：安装 wizard 中有一个步骤需要留意一下，命令行组件最好勾选上，如有疑惑参考 [Stack Overflow教程](https://stackoverflow.com/questions/1625406/how-to-use-tortoisesvn-via-command-line)**
+
+### 检验安装结果
 
 ```bash
 svn --version
@@ -74,11 +90,11 @@ svn --version
 
 ---
 
-## 2. 常用命令详解（命令行）
+## 2. 常用命令详解（命令行）（你大概率平常不会这么用，so you may [skip](#3-tortoisesvn-使用示例windows-图形客户端)）
 
-工作区相关
+### 工作区相关
 
-- 从仓库检出一个工作副本：
+#### 从仓库检出一个工作副本
 
 ```bash
 svn checkout <REPO_URL> [目标目录]
@@ -86,86 +102,86 @@ svn checkout <REPO_URL> [目标目录]
 svn checkout https://svn.example.com/repos/project/trunk project-trunk
 ```
 
-- 更新当前工作副本到最新：
+#### 更新当前工作副本到最新
 
 ```bash
 svn update
 ```
 
-- 查看当前更改/状态：
+#### 查看当前更改/状态
 
 ```bash
 svn status
 svn status -u   # 显示远端是否有更新
 ```
 
-- 查看某个文件或路径的详细信息：
+#### 查看某个文件或路径的详细信息
 
 ```bash
 svn info path_or_url
 ```
 
-添加 / 删除 / 重命名
+### 添加 / 删除 / 重命名
 
-- 将新文件加入版本控制：
+#### 将新文件加入版本控制
 
 ```bash
 svn add newfile.txt
 ```
 
-- 将文件标记为删除（提交后被移除）：
+#### 将文件标记为删除（提交后被移除）
 
 ```bash
 svn delete obsolete.txt
 ```
 
-- 重命名或移动（保留历史）：
+#### 重命名或移动（保留历史）
 
 ```bash
 svn move oldname newname
 ```
 
-提交/日志/差异
+### 提交/日志/差异
 
-- 提交更改到仓库：
+#### 提交更改到仓库
 
 ```bash
 svn commit -m "说明性提交信息"
 ```
 
-- 查看提交历史：
+#### 查看提交历史
 
 ```bash
 svn log -l 50        # 最近 50 条
 svn log -r BASE:HEAD # 从本地基线到最新
 ```
 
-- 查看文件差异（在本地）：
+#### 查看文件差异（在本地）
 
 ```bash
 svn diff [path]
 ```
 
-分支 / 标签（使用 copy）
+### 分支 / 标签（使用 copy）
 
 SVN 用目录来表示分支与标签，常见仓库布局：`/trunk`, `/branches`, `/tags`。
 
-- 创建分支（在服务端拷贝）：
+#### 创建分支（在服务端拷贝）
 
 ```bash
 svn copy https://svn.example.com/repos/project/trunk \
  https://svn.example.com/repos/project/branches/my-feature -m "create branch my-feature"
 ```
 
-- 从分支检出/切换：
+#### 从分支检出/切换
 
 ```bash
 svn switch https://svn.example.com/repos/project/branches/my-feature
 ```
 
-合并
+### 合并
 
-- 将分支合并回 trunk（示例为把 `branches/my-feature` 的改动合并到当前工作副本）：
+#### 将分支合并回 trunk（示例为把 `branches/my-feature` 的改动合并到当前工作副本）
 
 ```bash
 # 先更新 trunk 工作副本到最新
@@ -176,7 +192,7 @@ svn merge https://svn.example.com/repos/project/branches/my-feature
 svn commit -m "merge my-feature into trunk"
 ```
 
-导出（无 .svn 元数据）：
+### 导出（无 .svn 元数据）
 
 ```bash
 svn export https://svn.example.com/repos/project/trunk ./exported-copy
@@ -184,16 +200,16 @@ svn export https://svn.example.com/repos/project/trunk ./exported-copy
 
 ---
 
-## 3. 忽略文件（svn:ignore）
+### 忽略文件（svn:ignore）
 
-设置属性方式：
+#### 设置属性方式
 
 ```bash
 svn propset svn:ignore "node_modules\n.DS_Store" .
 svn commit -m "set svn:ignore for project"
 ```
 
-也可以把规则放到一个文件然后引用：
+#### 也可以把规则放到一个文件然后引用
 
 ```bash
 cat > .svnignore <<EOF
@@ -206,13 +222,13 @@ svn commit -m "update svn:ignore"
 
 ---
 
-## 4. 冲突与恢复
+### 冲突与恢复
 
-常见场景：两个人同时编辑同一文件，提交时出现冲突。推荐工作流：
+#### 常见场景：两个人同时编辑同一文件，提交时出现冲突。推荐工作流
 
 1. 提交前执行 `svn update`，把别人的改动合并到本地。
 2. 如果 `svn update` 报冲突，文件会包含冲突标记（<<<<<<<、=======、>>>>>>>）。手动合并这些标记内容。
-3. 合并完成后，标记为已解决：
+3. 合并完成后，标记为已解决
 
    ```bash
    svn resolve --accept working conflicted-file.txt
@@ -222,17 +238,17 @@ svn commit -m "update svn:ignore"
 
 4. 最后 `svn commit -m "resolve conflict for ..."`。
 
-如果想放弃本地更改，用：
+#### 如果想放弃本地更改，用
 
 ```bash
 svn revert path/to/file
 ```
 
-注意：`svn revert` 会丢弃本地未提交的修改。要慎用。
+> 注意：`svn revert` 会丢弃本地未提交的修改。要慎用。
 
 ---
 
-## 5. 身份验证与凭证缓存
+### 身份验证与凭证缓存
 
 第一次访问需要输入用户名/密码。可以让客户端缓存凭证：
 
@@ -244,7 +260,7 @@ svn revert path/to/file
 
 ---
 
-## 6. TortoiseSVN 使用示例（Windows 图形客户端）
+## 3. TortoiseSVN 使用示例（Windows 图形客户端）
 
 TortoiseSVN 是 Windows 上流行的 SVN 图形客户端，集成在资源管理器右键菜单中。
 
@@ -341,11 +357,11 @@ repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 
 
 ---
 
-## 7. 在 Visual Studio Code 中使用 SVN（图形/扩展指南）
+## 4. 在 Visual Studio Code 中使用 SVN（图形/扩展指南）
 
 下面说明在 VS Code 中以图形或扩展方式使用 SVN 的常见步骤与建议。不同扩展提供的命令名称可能略有差别，但核心操作一致。
 
-### 7.1 安装扩展
+### 4.1 安装扩展
 
 1. 打开 VS Code。
 2. 侧边栏选择扩展（Extensions），在搜索框输入 "SVN" 或 "Subversion"。
@@ -353,7 +369,7 @@ repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 
 
 注意：该扩展通常只是提供 UI 与命令封装，仍然需要系统中安装好 `svn` 命令行工具并可在 PATH 中访问。
 
-### 7.2 常见图形操作（命令面板 & 源代码管理视图）
+### 4.2 常见图形操作（命令面板 & 源代码管理视图）
 
 - 检出仓库：打开命令面板（Cmd/Ctrl+Shift+P），选择 `SVN: Checkout` 或扩展提供的同名命令，输入仓库 URL，选择本地目录。
 - 更新：在资源管理器或命令面板执行 `SVN: Update`，或在源代码管理（Source Control）面板使用更新按钮。
@@ -363,7 +379,7 @@ repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 
 
 很多扩展还提供图形化的冲突解决指引和文件差异查看（内置 diff 窗口），方便手动合并并标记为已解决。
 
-### 7.3 配置建议
+### 4.3 配置建议
 
 - 指定 SVN 可执行文件路径（如果扩展找不到 `svn`）：在 `settings.json` 中配置类似 `"svn.path": "/usr/local/bin/svn"`（具体键名以扩展文档为准）。
 - 配置自动更新、提交行为或默认忽略规则，参考扩展设置页。
@@ -379,7 +395,7 @@ repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 
 }
 ```
 
-### 7.4 VS Code 工作流示例
+### 4.4 VS Code 工作流示例
 
 1. 使用 `SVN: Checkout` 将远端 trunk/branch 检出到本地目录，并在 VS Code 中打开该文件夹。
 2. 在编辑器中修改文件，保存后在源代码管理面板查看变更（显示新增/修改/删除）。
@@ -388,7 +404,7 @@ repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 
 
 ---
 
-## 8. 常见问题（FAQ）
+## 5. 常见问题（FAQ）
 
 Q: 提交时提示“out of date”或版本冲突怎么办？
 
@@ -410,25 +426,9 @@ A: 使用 `svn export`（参见上文）。
 
 ---
 
-## 9. 小贴士与最佳实践
+## 6. 小贴士与最佳实践
 
 - 在提交前经常 `svn update`，保持与主干的同步，减少合并冲突。
 - 提交信息写清楚改动目的，回溯时更容易定位。
 - 使用分支进行大改动或实验性功能，合并回主分支前做好代码审查和测试。
 - 在项目根目录设置 `svn:ignore`，避免把编译产物或依赖包提交到仓库。
-
----
-
-## 10. 参考命令速查表
-
-- svn checkout [URL] [dir] - 检出
-- svn update - 更新
-- svn add \<file> - 添加到版本控制
-- svn delete \<file> - 删除并提交
-- svn commit -m "msg" - 提交
-- svn status - 状态
-- svn diff - 查看差异
-- svn log -l 50 - 最近 50 条提交
-- svn propset svn:ignore \<rules> . - 设置忽略规则
-- svn merge [URL] - 合并
-- svn export [URL] \[dir] - 导出（无 .svn）

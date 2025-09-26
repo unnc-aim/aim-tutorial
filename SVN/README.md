@@ -25,15 +25,22 @@
 ## 本文快速链接
 
 - [SVN 安装](#1-安装-svn)
+- [命令行使用](#2-常用命令详解命令行你大概率平常不会这么用so-you-may-skip)
 - [Windows TortoiseSVN 使用示例](#3-tortoisesvn-使用示例windows-图形客户端)
 - [VS Code 中使用 SVN](#4-在-visual-studio-code-中使用-svn图形扩展指南)
 - [常见问题](#5-常见问题faq)
+
+## 快速链接
+
+- 小乌龟（TortoiseSVN） — 官方网站：[https://tortoisesvn.net/](https://tortoisesvn.net/)；本文示例跳转：[TortoiseSVN 使用示例](#3-tortoisesvn-使用示例windows-图形客户端)
+- VS Code 界面（在 VS Code 中使用 SVN） — 官方文档：[https://code.visualstudio.com/docs/editor/versioncontrol](https://code.visualstudio.com/docs/editor/versioncontrol)；本文示例跳转：[VS Code 中使用 SVN](#4-在-visual-studio-code-中使用-svn图形扩展指南)
 
 ---
 
 ## 命令速览（快速参考）
 
 - 检出（checkout）：`svn checkout [URL] <path>`
+- 空深度检出：`svn checkout --depth=empty [URL] <path>`（只检出目录结构，不下载文件）
 - 更新（update）：`svn update` 或 `svn up`
 - 添加文件：`svn add <file>`
 - 提交：`svn commit -m "message"`
@@ -80,7 +87,7 @@ sudo apt install subversion
 
 [点击下载 Windows x64 安装包](https://sourceforge.net/projects/tortoisesvn/files/1.14.9/Application/TortoiseSVN-1.14.9.29743-x64-svn-1.14.5.msi/download)
 
-#### **注意：安装 wizard 中有一个步骤需要留意一下，命令行组件最好勾选上，如有疑惑参考 [Stack Overflow教程](https://stackoverflow.com/questions/1625406/how-to-use-tortoisesvn-via-command-line)**
+#### **注意：安装 wizard 中有一个步骤需要留意一下，命令行组件最好勾选上，如有疑惑参考 [Stack Overflow 教程](https://stackoverflow.com/questions/1625406/how-to-use-tortoisesvn-via-command-line)**
 
 ### 检验安装结果
 
@@ -101,6 +108,33 @@ svn checkout <REPO_URL> [目标目录]
 # 示例：
 svn checkout https://svn.example.com/repos/project/trunk project-trunk
 ```
+
+#### 空深度检出（只检出目录结构，不下载文件）
+
+当你只想在现有仓库中添加新目录，而不想下载仓库中已有的所有文件时，可以使用空深度检出：
+
+```bash
+svn checkout --depth=empty <REPO_URL> [目标目录]
+```
+
+**使用场景：** 假设你有一个仓库 `svn://url/a`，里面已经有很多文件和目录，但你只想在其中添加一个新目录而不下载现有内容：
+
+```bash
+# 1. 空深度检出（只获取目录元信息，不下载现有文件）
+svn checkout --depth=empty svn://url/a a
+
+# 2. 进入目录并创建新目录
+cd a
+mkdir newdir
+
+# 3. 添加新目录到版本控制
+svn add newdir
+
+# 4. 提交新目录到服务器
+svn commit -m "Add new directory newdir under a"
+```
+
+这样，本地的 `a/` 目录中只有 `.svn/` 元数据目录和你新创建的 `newdir`，不会包含仓库中原有的其他文件和目录。
 
 #### 更新当前工作副本到最新
 
@@ -283,6 +317,44 @@ repository(版本库)的位置，对于 SVN 来说，repository 的位置都是 
 ![CheckoutSuccess](./assets/3-CheckoutSuccess.png)
 
 上图表示，SVN 链接文件夹与库（`https://DESKTOP-JHR5MP0/svn/SVNTEST/`）建立连接，同时检出库中的内容，因为库里无内容，所以显示版本为 0，且无其它文件夹。
+
+### 1.1 空深度检出（只检出目录，不下载现有文件）
+
+**使用场景：** 当你想要在一个已有内容的仓库中添加新目录，但不想下载仓库中现有的所有文件时。
+
+**操作步骤：**
+
+1. **右键 → SVN Checkout…**
+
+   - 在 "URL of repository" 填写仓库地址，例如：`svn://url/a`
+   - 在 "Checkout directory" 选择本地存放路径，例如：`D:\svn\a`
+
+2. **设置检出深度**
+
+   - 在 Checkout 对话框中，找到 "Checkout Depth" 选项（默认是 "Fully recursive"）
+   - **将其改为 "Only this item"**
+   - 👉 这样本地只会获得目录的外壳和 `.svn` 元数据，不会下载目录下的现有文件和子目录
+
+3. **点击 OK 完成检出**
+
+   - 此时本地的 `D:\svn\a` 文件夹是空的（只有隐藏的 `.svn` 目录），没有原来仓库里的内容
+
+4. **在本地新建目录**
+
+   - 在 `D:\svn\a` 下新建一个文件夹，比如 `newdir`
+
+5. **右键 → TortoiseSVN → Add**
+
+   - 给 `newdir` 添加到版本控制
+
+6. **右键 → SVN Commit…**
+   - 输入提交说明，比如 "Add newdir under a"，点击 OK
+   - 新目录就会上传到 `svn://url/a/newdir`，而你本地仍然没有仓库里原有的其他内容
+
+**小结：**
+
+- TortoiseSVN 中的 "Checkout Depth → Only this item" 对应命令行的 `svn checkout --depth=empty`
+- 剩下的操作就是常规的：新建目录 → Add → Commit
 
 ### 2. SVN commit（提交）
 

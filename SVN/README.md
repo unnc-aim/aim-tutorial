@@ -506,3 +506,11 @@ A: 使用 `svn export`（参见上文）。
 - 提交信息写清楚改动目的，回溯时更容易定位。
 - 使用分支进行大改动或实验性功能，合并回主分支前做好代码审查和测试。
 - 在项目根目录设置 `svn:ignore`，避免把编译产物或依赖包提交到仓库。
+
+---
+
+## 附录：参考资料
+
+- SVN 官方文档：[https://subversion.apache.org/docs/](https://subversion.apache.org/docs/)
+- TortoiseSVN 官方网站：[https://tortoisesvn.net/](https://tortoisesvn.net/)
+- CSDN 教程：[https://blog.csdn.net/qq_45527691/article/details/122302359](https://blog.csdn.net/qq_45527691/article/details/122302359)
